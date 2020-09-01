@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 from data import player_database 
+from .. import function
 
 class Admin(commands.Cog):
     def __init__(self, client):
@@ -24,9 +25,22 @@ class Admin(commands.Cog):
             await self.help(channel)
             return
 
+        # 長さ 1~
+
         if args[0] == 'help':
             await self.help(channel)
             return
+
+        # 長さ 3~
+
+        # /c admin add <メンション> <数字>
+        if args[0] == 'add':
+            # 変数
+            id = int(function.MentionToID(args[1]))
+            amount = args[2]
+
+            player_database_class = player_database.Player_database(id)
+            add_coin(amount)
 
 
     # *

@@ -47,6 +47,7 @@ class Player_database:
     
     # コインを増減
     def add_coin(self, amount):
+
         now = get_coin()
         set_coin(now + amount)
     
