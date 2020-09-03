@@ -4,10 +4,10 @@ import os
 with open(os.path.dirname(os.path.abspath(__file__)) + '/../saves/player.yaml') as file:
     obj = yaml.safe_load(file.read())
 
-class Player_database:
-    def __init__(self,id):
-        self.id = id
 
+class Player_database:
+    def __init__(self, user_id):
+        self.user_id = user_id
 
     # * ==================================================
     # * 
@@ -21,40 +21,41 @@ class Player_database:
         #
         # 初期
         #
-        if obj['player']['coin'] is None:
-            obj['player']['coin'] = {}
-        
-        if obj['player']['coin'][str(self.id)] is None:
-            obj['player']['coin'][str(self.id)] = 1
+        if obj['player'] is None:
+            obj['player'] = {}
 
+        if not str(self.user_id) in obj['player']:
+            obj['player'][str(self.user_id)] = {}
+            obj['player'][str(self.user_id)]['coin'] = 0
+
+        #if obj['player'][str(self.user_id)]:
 
         self.save()
 
-        return obj['player']['coin'][str(self.id)]
+        return int(obj['player'][str(self.user_id)]['coin'])
 
     # コインをセット
     def set_coin(self, amount):
-        global obj 
+        global obj
+        amount = int(amount)
         # 初期
-        if obj['player']['coin'] is None:
-            obj['player']['coin'] = {}
+        if obj['player'][str(self.user_id)] is None:
+            obj['player'][str(self.user_id)] = {}
         
         if amount < 0:
             amount = 0
 
-        obj['player']['coin'][str(self.id)] = amount
+        obj['player'][str(self.user_id)]['coin'] = int(amount)
         self.save()
     
     # コインを増減
     def add_coin(self, amount):
 
-        now = get_coin()
-        set_coin(now + amount)
-    
+        now = self.get_coin()
+        self.set_coin(now + int(amount))
+
     # yamlのセーブ
-    def save(self):
-        with open(os.path.dirname(os.path.abspath(__file__)) + '/../saves/player.yaml', mode='w') as file:
-            file.write( yaml.dump(obj, default_flow_style=False) )
-
-
-
+    @staticmethod
+    def save():
+        with open(os.path.dirname(os.path.abspath(__file__)) + '/../saves/player.yaml', mode='w') as f:
+            f.write(yaml.dump(obj, default_flow_style=False))
